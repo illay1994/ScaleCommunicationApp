@@ -1,0 +1,82 @@
+﻿<Window x:Class="ScaleCommunicationApp.MainView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ScaleCommunicationApp"
+        mc:Ignorable="d"
+        Title="Scale communication app"
+        Height="480"
+        Width="640"
+        MinWidth="640"
+        MinHeight="480"
+        MaxWidth="640"
+        MaxHeight="480"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="ToolWindow"
+        d:DataContext="{d:DesignInstance local:MainView}">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="7*" />
+            <ColumnDefinition Width="3*" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="9*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.ColumnSpan="2" Margin="5" VerticalAlignment="Center" Orientation="Horizontal">
+            <TextBlock Text="IP address:" />
+            <TextBox Width="100" Margin="10,0" Text="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged}"
+                     x:Name="txtIpAddress" />
+            <Button Content="Connect" Name="btnConnect" Click="btnConnect_OnClick" />
+            <TextBlock Text="{Binding Status}" Margin="10,0" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
+            <TextBlock>
+                <Run Text="Device type:" />
+                <Run Text="{Binding ScaleInfo.DeviceType, Mode=OneWay}" FontWeight="Bold" />
+            </TextBlock>
+            <TextBlock>
+                <Run Text="Device name:" />
+                <Run Text="{Binding ScaleInfo.DeviceName, Mode=OneWay}" FontWeight="Bold" />
+            </TextBlock>
+            <TextBlock>
+                <Run Text="Serial number:" />
+                <Run Text="{Binding ScaleInfo.SerialNumber, Mode=OneWay}" FontWeight="Bold" />
+            </TextBlock>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" x:Name="OperationPanel" Visibility="Hidden">
+            <Button Content="Tare" Width="100" Click="BtnTare_OnClick" Margin="5" />
+            <Button Content="Zero" Width="100" Click="BtnZero_OnClick" Margin="5" />
+        </StackPanel>
+        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DisplayPanel" Visibility="Hidden">
+            <StackPanel HorizontalAlignment="Center"
+                        VerticalAlignment="Center" Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Margin="50"
+                            x:Name="Stability">
+                    <Polygon Points="0,0 20,20, 0,20" Stroke="Black" Fill="Black" />
+                    <Polygon Points="0,0 20,20, 0,20" Stroke="Black" Fill="Black">
+                        <Polygon.RenderTransform>
+                            <RotateTransform Angle="270" CenterX="10" CenterY="10" />
+                        </Polygon.RenderTransform>
+                    </Polygon>
+                </StackPanel>
+                <TextBlock FontSize="50" FontWeight="Bold"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center">
+                    <Run Text="{Binding Mass, Mode=OneWay}" />
+                    <Run Text="{Binding Mass.Unit, Mode=OneWay}" />
+                </TextBlock>
+            </StackPanel>
+            <TextBlock FontSize="30" HorizontalAlignment="Center">
+                <Run Text="Tare:" />
+                <Run Text="{Binding Tare.StrValue, Mode=OneWay}" />
+                <Run Text="{Binding Tare.Unit, Mode=OneWay}" />
+            </TextBlock>
+        </StackPanel>
+
+    </Grid>
+</Window>
