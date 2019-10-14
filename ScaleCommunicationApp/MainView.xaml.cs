@@ -176,7 +176,6 @@ namespace ScaleCommunicationApp {
         /// Disposing sender.
         /// </summary>
         private void DisposeSender() {
-            _sender.Disconnect();
             _sender.Dispose();
             _sender = null;
         }
