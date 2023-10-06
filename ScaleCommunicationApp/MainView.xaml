@@ -22,6 +22,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="9*" />
         </Grid.RowDefinitions>
@@ -30,10 +31,17 @@
             <TextBlock Text="IP address:" />
             <TextBox Width="100" Margin="10,0" Text="{Binding IpAddress, UpdateSourceTrigger=PropertyChanged}"
                      x:Name="txtIpAddress" />
-            <Button Content="Connect" Name="btnConnect" Click="btnConnect_OnClick" />
+            <Button Content="Connect" Name="btnIpConnect" Click="btnIpConnect_OnClick" />
             <TextBlock Text="{Binding Status}" Margin="10,0" />
         </StackPanel>
 
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="2" Margin="5" VerticalAlignment="Center" Orientation="Horizontal">
+            <TextBlock Text="Port:" />
+            <TextBox Width="100" Margin="10,0" Text="{Binding Port, UpdateSourceTrigger=PropertyChanged}"
+                     x:Name="txtPort" />
+            <Button Content="Connect" Name="btnRs232Connect" Click="btnRs232Connect_OnClick" />
+            <TextBlock Text="{Binding Status}" Margin="10,0" />
+        </StackPanel>
         <StackPanel Grid.Column="1" Grid.Row="0" Grid.RowSpan="2">
             <TextBlock>
                 <Run Text="Device type:" />
@@ -48,11 +56,11 @@
                 <Run Text="{Binding ScaleInfo.SerialNumber, Mode=OneWay}" FontWeight="Bold" />
             </TextBlock>
         </StackPanel>
-        <StackPanel Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" x:Name="OperationPanel" Visibility="Hidden">
+        <StackPanel Grid.Row="2" Grid.Column="0" HorizontalAlignment="Left" x:Name="OperationPanel" Visibility="Hidden">
             <Button Content="Tare" Width="100" Click="BtnTare_OnClick" Margin="5" />
             <Button Content="Zero" Width="100" Click="BtnZero_OnClick" Margin="5" />
         </StackPanel>
-        <StackPanel Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DisplayPanel" Visibility="Hidden">
+        <StackPanel Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" x:Name="DisplayPanel" Visibility="Hidden">
             <StackPanel HorizontalAlignment="Center"
                         VerticalAlignment="Center" Orientation="Horizontal">
                 <StackPanel Orientation="Horizontal" Margin="50"

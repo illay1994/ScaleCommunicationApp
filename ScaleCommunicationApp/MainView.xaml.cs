@@ -16,6 +16,7 @@ namespace ScaleCommunicationApp {
     /// </summary>
     public partial class MainView : INotifyPropertyChanged {
         private string _ipAddress = "192.168.4.1";
+        private string _port = "COM1";
         private string _status = "Disconnected";
         private ISender _sender;
         private WINFO _scaleInfo = new WINFO();
@@ -74,6 +75,19 @@ namespace ScaleCommunicationApp {
             }
         }
         /// <summary>
+        /// Ip address of scale.
+        /// </summary>
+        public string Port
+        {
+            get => _port;
+            set
+            {
+                if (value == _port) return;
+                _port = value;
+                OnPropertyChanged();
+            }
+        }
+        /// <summary>
         /// Status of connection.
         /// </summary>
         public string Status {
@@ -97,7 +111,7 @@ namespace ScaleCommunicationApp {
         /// <summary>
         /// Connect button click event.
         /// </summary>
-        private async void btnConnect_OnClick (object sender, RoutedEventArgs e) {
+        private async void btnIpConnect_OnClick (object sender, RoutedEventArgs e) {
             if (!Regex.IsMatch(IpAddress,
                 @"^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$")) {
                 Status = "Invalid Ip address format";
@@ -108,6 +122,8 @@ namespace ScaleCommunicationApp {
                 Status = "Connecting...";
                 if (await _sender.ConnectAsync()) {
                     InitializeConnection();
+                    btnIpConnect.Content = "Disconnect";
+                    txtIpAddress.IsEnabled = false;
                 }
                 else {
                     Status = "Error";
@@ -115,6 +131,41 @@ namespace ScaleCommunicationApp {
             }
             else {
                 PerformDisconnection();
+                btnIpConnect.Content = "Connect";
+                txtIpAddress.IsEnabled = true;
+            }
+        }
+        /// <summary>
+        /// Connect button click event.
+        /// </summary>
+        private async void btnRs232Connect_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (!Regex.IsMatch(Port,
+                @"^COM(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]))$"))
+            {
+                Status = "Invalid Com address format";
+                return;
+            }
+            if (_sender == null || !_sender.IsConnected)
+            {
+                _sender = new SerialSender(Port);
+                Status = "Connecting...";
+                if (await _sender.ConnectAsync())
+                {
+                    InitializeConnection();
+                    btnRs232Connect.Content = "Disconnect";
+                    txtPort.IsEnabled = false;
+                }
+                else
+                {
+                    Status = "Error";
+                }
+            }
+            else
+            {
+                PerformDisconnection();
+                btnRs232Connect.Content = "Connect";
+                txtPort.IsEnabled = true;
             }
         }
         /// <summary>
@@ -143,11 +194,9 @@ namespace ScaleCommunicationApp {
         private void InitializeConnection() {
             _ctsMassThread = new CancellationTokenSource();
             Status = "Connected";
-            btnConnect.Content = "Disconnect";
             GetScaleInformation();
             ChangePanelVisibility(Visibility.Visible);
             Task.Run(MassUpdater);
-            txtIpAddress.IsEnabled = false;
         }
         /// <summary>
         /// Performing disconnection with scale.
@@ -158,8 +207,6 @@ namespace ScaleCommunicationApp {
             DisposeSender();
             ChangePanelVisibility(Visibility.Hidden);
             Status = "Disconnected";
-            btnConnect.Content = "Connect";
-            txtIpAddress.IsEnabled = true;
         }
         
         /// <summary>
@@ -190,7 +237,7 @@ namespace ScaleCommunicationApp {
                     Thread.Sleep(10);
                     UpdateValue<OT, OTCmd>(ref _tare);
                 }
-                Dispatcher?.Invoke(() => Stability.Visibility = Mass.IsStable.HasValue && Mass.IsStable.Value ? Visibility.Visible : Visibility.Hidden);
+                Dispatcher?.Invoke(() => Stability.Visibility = Mass != null && Mass.IsStable.HasValue && Mass.IsStable.Value ? Visibility.Visible : Visibility.Hidden);
                 OnPropertyChanged("");
             }
         }
